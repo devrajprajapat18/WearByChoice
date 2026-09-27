@@ -6,6 +6,6 @@
   - Local:        http://localhost:3100
 
  ✓ Starting...
- ✓ Ready in 523ms
-(node:27904) Warning: `--localstorage-file` was provided without a valid path
+ ✓ Ready in 756ms
+(node:17868) Warning: `--localstorage-file` was provided without a valid path
 (Use `node --trace-warnings ...` to show where the warning was created)

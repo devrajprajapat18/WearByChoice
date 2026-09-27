@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WearByChoice — Complete System Flow</title>
+  <style>
+    @page { size: A4 landscape; margin: 12mm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #fff; color: #1a1a1a; line-height: 1.5; padding: 20px; font-size: 13px; }
+
+    .page { page-break-after: always; padding: 10px 0; }
+    .page:last-child { page-break-after: auto; }
+
+    h1 { font-size: 26px; font-weight: 900; text-align: center; margin-bottom: 4px; }
+    .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 20px; }
+    h2 { font-size: 18px; font-weight: 800; margin: 18px 0 10px 0; border-bottom: 3px solid #000; padding-bottom: 4px; display: inline-block; }
+    h3 { font-size: 14px; font-weight: 700; margin: 12px 0 6px 0; }
+
+    .cols { display: grid; gap: 14px; }
+    .cols-2 { grid-template-columns: 1fr 1fr; }
+    .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+    .card { border: 1.5px solid #ddd; border-radius: 8px; padding: 12px; background: #fafafa; }
+    .card.highlight { border-color: #000; background: #f5f5f5; }
+    .card h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .card ul { padding-left: 16px; }
+    .card li { margin-bottom: 2px; }
+
+    .flow-box { border: 2px solid #000; border-radius: 8px; padding: 10px 14px; text-align: center; font-weight: 700; font-size: 13px; background: #fff; }
+    .flow-box.dark { background: #1a1a1a; color: #fff; }
+    .flow-box.accent { background: #22c55e; color: #fff; border-color: #16a34a; }
+    .flow-box.blue { background: #3b82f6; color: #fff; border-color: #2563eb; }
+    .flow-box.orange { background: #f97316; color: #fff; border-color: #ea580c; }
+    .flow-box.purple { background: #8b5cf6; color: #fff; border-color: #7c3aed; }
+
+    .arrow { text-align: center; font-size: 20px; color: #999; padding: 2px 0; }
+    .arrow-right { display: inline; font-size: 16px; color: #999; padding: 0 6px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+    th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
+    th { background: #f0f0f0; font-weight: 700; }
+    tr:nth-child(even) { background: #fafafa; }
+
+    .tag { display: inline-block; background: #e5e7eb; border-radius: 4px; padding: 1px 6px; font-size: 11px; margin: 1px; }
+    .tag.green { background: #dcfce7; color: #166534; }
+    .tag.blue { background: #dbeafe; color: #1e40af; }
+    .tag.orange { background: #ffedd5; color: #9a3412; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+
+    .section { margin-bottom: 16px; }
+    .flex-center { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+
+    .file-tree { font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; background: #f8f8f8; border: 1px solid #ddd; border-radius: 6px; padding: 10px 14px; line-height: 1.7; }
+    .file-tree .dir { font-weight: 700; }
+    .file-tree .file { color: #555; }
+    .file-tree .img { color: #16a34a; }
+
+    .number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #000; color: #fff; font-size: 11px; font-weight: 700; margin-right: 4px; flex-shrink: 0; }
+    .step { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+    .step-text { flex: 1; }
+
+    .two-role { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: start; }
+    .role-card { border: 2px solid #000; border-radius: 10px; padding: 14px; }
+    .role-card h3 { margin-top: 0; }
+    .vs { display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; color: #999; }
+
+    .pipeline { display: flex; align-items: center; gap: 0; justify-content: center; flex-wrap: wrap; }
+    .pipeline .step-box { border: 2px solid #000; border-radius: 8px; padding: 8px 14px; text-align: center; min-width: 110px; background: #fff; }
+    .pipeline .step-box .num { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+    .pipeline .step-box .label { font-weight: 700; font-size: 13px; }
+    .pipeline .arr { font-size: 20px; color: #999; padding: 0 4px; }
+
+    .journey-line { display: flex; align-items: stretch; gap: 0; }
+    .journey-step { flex: 1; border: 1.5px solid #ddd; border-radius: 6px; padding: 8px; text-align: center; position: relative; background: #fff; }
+    .journey-step .jnum { font-size: 10px; color: #999; text-transform: uppercase; }
+    .journey-step .jlabel { font-weight: 700; font-size: 12px; }
+    .journey-step .jdesc { font-size: 11px; color: #555; margin-top: 2px; }
+    .journey-arr { display: flex; align-items: center; font-size: 18px; color: #ccc; padding: 0 2px; }
+
+    @media print {
+      body { padding: 0; font-size: 11px; }
+      .page { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PAGE 1: TITLE + OVERVIEW -->
+<div class="page">
+  <h1>WearByChoice</h1>
+  <p class="subtitle">See it. Style it. Wear it. — AI-Powered Virtual Fashion Platform</p>
+  <p style="text-align:center; color:#888; font-size:12px; margin-bottom:18px;">Complete System Architecture &amp; User Flow Documentation</p>
+
+  <h2>System Overview</h2>
+  <div class="two-role section">
+    <div class="role-card">
+      <h3>Store Owner (Admin)</h3>
+      <ul>
+        <li>Manages product catalog</li>
+        <li>Syncs products from retailer feeds</li>
+        <li>Monitors stats (products, brands, categories)</li>
+        <li>Ensures catalog is correct before customers see it</li>
+      </ul>
+    </div>
+    <div class="vs">vs</div>
+    <div class="role-card">
+      <h3>User (Shopper)</h3>
+      <ul>
+        <li>Browses clothing catalog</li>
+        <li>Searches &amp; filters by category, price, color</li>
+        <li>Builds complete outfits (top + bottom + shoes)</li>
+        <li>Tries outfits on using AI virtual try-on</li>
+        <li>Saves outfits and buys via retailer links</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Tech Stack</h2>
+  <div class="grid-4 section">
+    <div class="card"><h4>Frontend</h4><ul><li>Next.js 14 (App Router)</li><li>React 18</li><li>TypeScript</li><li>Tailwind CSS</li></ul></div>
+    <div class="card"><h4>State &amp; Data</h4><ul><li>Zustand (cart/outfit)</li><li>Mock Product Provider</li><li>Local /public/products/ images</li></ul></div>
+    <div class="card"><h4>Backend</h4><ul><li>Next.js API Routes</li><li>REST endpoints</li><li>Provider adapters</li></ul></div>
+    <div class="card"><h4>AI &amp; Storage</h4><ul><li>Virtual Try-On API (mock/Replicate)</li><li>Prisma + PostgreSQL (ready)</li><li>Vercel deployment</li></ul></div>
+  </div>
+
+  <h2>Core Pages</h2>
+  <table>
+    <tr><th>Route</th><th>Page</th><th>Purpose</th><th>Key Features</th></tr>
+    <tr><td><code>/</code></td><td>Home</td><td>Landing page</td><td>Trending products grid, search bar, CTAs</td></tr>
+    <tr><td><code>/discover</code></td><td>Discover</td><td>Product browsing</td><td>Search, filter by category/price/color, sort</td></tr>
+    <tr><td><code>/outfit</code></td><td>Outfit Builder</td><td>Build complete looks</td><td>Select top + bottom + shoes, see total price</td></tr>
+    <tr><td><code>/try-on</code></td><td>Virtual Try-On</td><td>AI try-on</td><td>Upload photo, select outfit, AI generates preview</td></tr>
+    <tr><td><code>/saved</code></td><td>Saved</td><td>Saved outfits</td><td>View saved collections, manage items</td></tr>
+    <tr><td><code>/admin</code></td><td>Admin Dashboard</td><td>Store owner panel</td><td>Stats, product sync pipeline</td></tr>
+    <tr><td><code>/login</code></td><td>Login</td><td>Authentication</td><td>Login / register forms</td></tr>
+    <tr><td><code>/products/[slug]</code></td><td>Product Detail</td><td>Single product view</td><td>Gallery, price, sizes, colors, add to outfit</td></tr>
+  </table>
+</div>
+
+<!-- PAGE 2: STORE OWNER FLOW -->
+<div class="page">
+  <h2>Part 1: Store Owner Flow</h2>
+
+  <div class="section">
+    <h3>Login &amp; Dashboard</h3>
+    <div class="flex-center" style="margin: 10px 0;">
+      <div class="flow-box" style="min-width:140px;">
+        <div style="font-size:11px;color:#999;">STEP 1</div>
+        Login<br/><code style="font-size:11px;">/login</code>
+      </div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box dark" style="min-width:140px;">
+        <div style="font-size:11px;color:#999;">STEP 2</div>
+        Admin Dashboard<br/><code style="font-size:11px;">/admin</code>
+      </div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box accent" style="min-width:140px;">
+        <div style="font-size:11px;color:#999;">STEP 3</div>
+        View Stats<br/>
+        <span style="font-size:11px;">Products: 12</span><br/>
+        <span style="font-size:11px;">Brands: 4</span><br/>
+        <span style="font-size:11px;">Categories: 4</span>
+      </div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box blue" style="min-width:140px;">
+        <div style="font-size:11px;color:#999;">STEP 4</div>
+        Click "Sync products"
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Product Sync Pipeline</h3>
+    <p style="color:#666; margin-bottom:8px;">When the store owner clicks <strong>"Sync products"</strong>, this pipeline runs:</p>
+    <div class="pipeline" style="margin: 12px 0;">
+      <div class="step-box">
+        <div class="num">Step 1</div>
+        <div class="label">FETCH</div>
+        <div style="font-size:11px;color:#666;">Retailer feed or<br/>local catalog</div>
+      </div>
+      <div class="arr">→</div>
+      <div class="step-box">
+        <div class="num">Step 2</div>
+        <div class="label">NORMALIZE</div>
+        <div style="font-size:11px;color:#666;">Map to standard<br/>Product schema</div>
+      </div>
+      <div class="arr">→</div>
+      <div class="step-box">
+        <div class="num">Step 3</div>
+        <div class="label">DEDUPE</div>
+        <div style="font-size:11px;color:#666;">Remove same<br/>products (by ID)</div>
+      </div>
+      <div class="arr">→</div>
+      <div class="step-box">
+        <div class="num">Step 4</div>
+        <div class="label">STORE</div>
+        <div style="font-size:11px;color:#666;">Save to DB<br/>or in-memory</div>
+      </div>
+    </div>
+    <div class="card highlight" style="margin-top:8px;">
+      <strong>API Call:</strong> <code>POST /api/admin/products/sync</code><br/>
+      <strong>Response:</strong> <code>{ synced: 12, duplicatesRemoved: 3, provider: "mock" }</code><br/>
+      <strong>Code:</strong> <code>src/app/api/admin/products/sync/route.ts</code>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Admin Dashboard UI</h3>
+    <div class="grid-4">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:11px;color:#999;">Total Products</div>
+        <div style="font-size:28px;font-weight:900;">12</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:11px;color:#999;">Brands</div>
+        <div style="font-size:28px;font-weight:900;">4</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:11px;color:#999;">Categories</div>
+        <div style="font-size:28px;font-weight:900;">4</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:11px;color:#999;">Provider</div>
+        <div style="font-size:28px;font-weight:900;">mock</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Part 2: Product Data Model</h2>
+  <div class="card section">
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Example</th><th>Purpose</th></tr>
+      <tr><td><code>id</code></td><td>string</td><td><code>wbc-tee-black-crew</code></td><td>Unique product identifier</td></tr>
+      <tr><td><code>name</code></td><td>string</td><td>Black Essential Crew Tee</td><td>Display name</td></tr>
+      <tr><td><code>brand</code></td><td>string</td><td>Mono &amp; Co</td><td>Brand name</td></tr>
+      <tr><td><code>category</code></td><td>string</td><td>T-Shirts</td><td>Product category</td></tr>
+      <tr><td><code>price</code></td><td>number</td><td>899</td><td>Current price (INR)</td></tr>
+      <tr><td><code>originalPrice</code></td><td>number</td><td>1199</td><td>Original price for discount</td></tr>
+      <tr><td><code>colors</code></td><td>string[]</td><td>["black"]</td><td>Available colors</td></tr>
+      <tr><td><code>sizes</code></td><td>string[]</td><td>["S","M","L","XL"]</td><td>Available sizes</td></tr>
+      <tr><td><code>thumbnail</code></td><td>string</td><td><code>/products/black-crew-tee.jpg</code></td><td>Card display image</td></tr>
+      <tr><td><code>images</code></td><td>string[]</td><td>["/products/black-crew-tee.jpg"]</td><td>Gallery images</td></tr>
+      <tr><td><code>tags</code></td><td>string[]</td><td>["tshirt","black","crew"]</td><td>Search &amp; filter tags</td></tr>
+      <tr><td><code>rating</code></td><td>number</td><td>4.6</td><td>Average rating</td></tr>
+      <tr><td><code>popularity</code></td><td>number</td><td>100</td><td>Sort weight</td></tr>
+      <tr><td><code>productUrl</code></td><td>string</td><td><code>https://example...</code></td><td>Retailer link</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- PAGE 3: USER FLOW -->
+<div class="page">
+  <h2>Part 3: User / Shopper Flow</h2>
+
+  <h3>Complete User Journey</h3>
+  <div class="journey-line section">
+    <div class="journey-step">
+      <div class="jnum">Step 1</div>
+      <div class="jlabel">Arrive at Home</div>
+      <div class="jdesc">/ — See trending products, search bar</div>
+    </div>
+    <div class="journey-arr">→</div>
+    <div class="journey-step">
+      <div class="jnum">Step 2</div>
+      <div class="jlabel">Discover</div>
+      <div class="jdesc">/discover — Search, filter, browse</div>
+    </div>
+    <div class="journey-arr">→</div>
+    <div class="journey-step">
+      <div class="jnum">Step 3</div>
+      <div class="jlabel">View Product</div>
+      <div class="jdesc">/products/[slug] — Gallery, sizes, price</div>
+    </div>
+    <div class="journey-arr">→</div>
+    <div class="journey-step">
+      <div class="jnum">Step 4</div>
+      <div class="jlabel">Add to Outfit</div>
+      <div class="jdesc">Click "Add" — Navbar count increases</div>
+    </div>
+    <div class="journey-arr">→</div>
+    <div class="journey-step">
+      <div class="jnum">Step 5</div>
+      <div class="jlabel">Build Outfit</div>
+      <div class="jdesc">/outfit — Pick top + bottom + shoes</div>
+    </div>
+    <div class="journey-arr">→</div>
+    <div class="journey-step">
+      <div class="jnum">Step 6</div>
+      <div class="jlabel">Try On</div>
+      <div class="jdesc">/try-on — Upload photo, AI generates preview</div>
+    </div>
+    <div class="journey-arr">→</div>
+    <div class="journey-step">
+      <div class="jnum">Step 7</div>
+      <div class="jlabel">Save</div>
+      <div class="jdesc">/saved — View saved collections</div>
+    </div>
+    <div class="journey-arr">→</div>
+    <div class="journey-step" style="border-color:#22c55e;">
+      <div class="jnum" style="background:#22c55e;">Step 8</div>
+      <div class="jlabel">Buy</div>
+      <div class="jdesc">Retailer link — Complete purchase</div>
+    </div>
+  </div>
+
+  <h3>Path A: Discover (Search &amp; Browse)</h3>
+  <div class="card section">
+    <div class="flex-center" style="margin-bottom:8px;">
+      <div class="flow-box" style="min-width:120px;">User types<br/>"black shirt"</div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box blue" style="min-width:120px;">GET /api/products<br/>/search?q=black+shirt</div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box" style="min-width:120px;">MockProvider<br/>.searchProducts()</div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box accent" style="min-width:120px;">Filter results<br/>Match by name, tags, desc</div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box dark" style="min-width:120px;">Product cards<br/>with thumbnails</div>
+    </div>
+    <p><strong>Filters available:</strong>
+      <span class="tag">Category</span>
+      <span class="tag">Price Range</span>
+      <span class="tag">Color</span>
+      <span class="tag">Size</span>
+      <span class="tag">Rating</span>
+      <span class="tag">Sort: Popular / Price / Rating / Newest</span>
+    </p>
+  </div>
+
+  <h3>Path B: Outfit Builder</h3>
+  <div class="card section">
+    <div class="flex-center" style="margin-bottom:8px;">
+      <div class="flow-box" style="min-width:100px;">Select<br/>Top</div>
+      <span class="arrow-right">+</span>
+      <div class="flow-box" style="min-width:100px;">Select<br/>Bottom</div>
+      <span class="arrow-right">+</span>
+      <div class="flow-box" style="min-width:100px;">Select<br/>Shoes</div>
+      <span class="arrow-right">=</span>
+      <div class="flow-box accent" style="min-width:100px;">Complete<br/>Outfit</div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box orange" style="min-width:100px;">Total<br/>Price</div>
+    </div>
+    <p><strong>Actions:</strong>
+      <span class="tag green">Save Outfit</span>
+      <span class="tag blue">Try On with AI</span>
+      <span class="tag orange">Buy from Retailer</span>
+    </p>
+  </div>
+
+  <h3>Path C: Virtual Try-On</h3>
+  <div class="card section">
+    <div class="flex-center" style="margin-bottom:8px;">
+      <div class="flow-box" style="min-width:110px;">Upload<br/>User Photo</div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box" style="min-width:110px;">Select<br/>Outfit Items</div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box purple" style="min-width:110px;">POST /api/try-on<br/>{userImage, products}</div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box blue" style="min-width:110px;">AI Provider<br/>Generates Image</div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box accent" style="min-width:110px;">Result<br/>Displayed</div>
+    </div>
+    <p><strong>Providers:</strong>
+      <span class="tag">Mock (demo)</span>
+      <span class="tag blue">Replicate (real AI)</span>
+    </p>
+  </div>
+</div>
+
+<!-- PAGE 4: API + IMAGE + FILE STRUCTURE -->
+<div class="page">
+  <h2>Part 4: API Routes &amp; Data Flow</h2>
+
+  <div class="grid-2 section">
+    <div class="card">
+      <h4>Product APIs</h4>
+      <table>
+        <tr><th>Method</th><th>Route</th><th>Purpose</th></tr>
+        <tr><td>GET</td><td><code>/api/products</code></td><td>List all 12 products + brands + categories</td></tr>
+        <tr><td>GET</td><td><code>/api/products/[id]</code></td><td>Single product by ID or slug</td></tr>
+        <tr><td>GET</td><td><code>/api/products/search?q=...</code></td><td>Search with filters (category, price, color, sort)</td></tr>
+        <tr><td>POST</td><td><code>/api/recommendations</code></td><td>AI-powered outfit recommendations</td></tr>
+        <tr><td>POST</td><td><code>/api/try-on</code></td><td>Virtual try-on (mock or real AI)</td></tr>
+        <tr><td>POST</td><td><code>/api/admin/products/sync</code></td><td>Sync &amp; dedupe catalog</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>State Management (Zustand)</h4>
+      <table>
+        <tr><th>State</th><th>Type</th><th>Purpose</th></tr>
+        <tr><td><code>items</code></td><td>string[]</td><td>Product IDs in current outfit</td></tr>
+        <tr><td><code>addItem(id)</code></td><td>function</td><td>Add product to outfit</td></tr>
+        <tr><td><code>removeItem(id)</code></td><td>function</td><td>Remove product from outfit</td></tr>
+        <tr><td><code>clearOutfit()</code></td><td>function</td><td>Clear all items</td></tr>
+        <tr><td><code>totalPrice</code></td><td>computed</td><td>Sum of selected product prices</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h2>Part 5: Image Loading Flow</h2>
+  <div class="card section">
+    <div class="flex-center">
+      <div class="flow-box" style="min-width:130px;">
+        ProductCard.tsx<br/>
+        <code style="font-size:11px;">src={p.thumbnail}</code>
+      </div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box" style="min-width:130px;">
+        SafeImage.tsx<br/>
+        Try loading src
+      </div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box" style="min-width:100px;">
+        Success?<br/>
+        <span style="font-size:18px;">✅ YES → Show image</span>
+      </div>
+      <span class="arrow-right">→</span>
+      <div class="flow-box orange" style="min-width:130px;">
+        NO → Fallback<br/>
+        <code style="font-size:11px;">/products/black-crew-tee.jpg</code>
+      </div>
+    </div>
+    <p style="margin-top:8px; color:#666;">
+      <strong>Key:</strong> All images served from <code>/public/products/</code> — no external URLs, no picsum, no placeholders.
+      Images are served by Next.js static file serving (Vercel CDN in production).
+    </p>
+  </div>
+
+  <h2>Part 6: Complete File Structure</h2>
+  <div class="file-tree section">
+    <span class="dir">WearByChoice/</span><br/>
+    ├── <span class="dir">public/products/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="img">← 12 clothing images</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">black-crew-tee.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">white-polo-tee.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">light-blue-crew-tee.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">beige-crew-tee.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">chocolate-brown-crew-tee.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">white-pullover-hoodie.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">tan-pullover-hoodie.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">green-black-check-flannel-shirt.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">sage-green-white-plaid-shirt.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">teal-blue-white-check-shirt.jpg</span><br/>
+    │&nbsp;&nbsp; ├── <span class="img">rust-orange-solid-overshirt.jpg</span><br/>
+    │&nbsp;&nbsp; └── <span class="img">tan-brown-denim-trucker-jacket.jpg</span><br/>
+    │<br/>
+    ├── <span class="dir">src/</span><br/>
+    │&nbsp;&nbsp; ├── <span class="dir">app/</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="file">page.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Home</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="dir">discover/</span><span class="file">page.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Search &amp; Filter</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="dir">outfit/</span><span class="file">page.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Outfit Builder</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="dir">try-on/</span><span class="file">page.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">AI Try-On</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="dir">saved/</span><span class="file">page.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Saved Outfits</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="dir">admin/</span><span class="file">page.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag orange">Admin Dashboard</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="dir">login/</span><span class="file">page.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Auth</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="dir">products/[slug]/</span><span class="file">page.tsx</span> <span class="tag">Product Detail</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; └── <span class="dir">api/</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span class="dir">products/</span><span class="file">route.ts</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag blue">GET all</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span class="dir">products/[id]/</span><span class="file">route.ts</span> <span class="tag blue">GET single</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span class="dir">products/search/</span><span class="file">route.ts</span> <span class="tag blue">GET search</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span class="dir">recommendations/</span><span class="file">route.ts</span> <span class="tag purple">POST AI recs</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span class="dir">try-on/</span><span class="file">route.ts</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag purple">POST try-on</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <span class="dir">admin/products/sync/</span><span class="file">route.ts</span> <span class="tag orange">POST sync</span><br/>
+    │&nbsp;&nbsp; │<br/>
+    │&nbsp;&nbsp; ├── <span class="dir">components/</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="file">Navbar.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Nav + outfit count</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="file">ProductCard.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Product grid card</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span class="file">SafeImage.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Image + fallback</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; └── <span class="file">AuthForm.tsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Login/Register</span><br/>
+    │&nbsp;&nbsp; │<br/>
+    │&nbsp;&nbsp; ├── <span class="dir">lib/providers/</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; └── <span class="file">mockProvider.ts</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag orange">MOCK_PRODUCTS[] (12 items)</span><br/>
+    │&nbsp;&nbsp; │<br/>
+    │&nbsp;&nbsp; └── <span class="dir">store/</span><br/>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <span class="file">useWearStore.ts</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Zustand cart/outfit</span><br/>
+    │<br/>
+    ├── <span class="dir">prisma/</span><br/>
+    │&nbsp;&nbsp; ├── <span class="file">schema.prisma</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">DB schema</span><br/>
+    │&nbsp;&nbsp; └── <span class="file">seed.ts</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">Seed script</span><br/>
+    │<br/>
+    └── <span class="dir">tests/</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <span class="file">core.test.ts</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag green">4 passing tests</span><br/>
+  </div>
+
+  <h2>Summary</h2>
+  <div class="card highlight">
+    <div class="grid-2">
+      <div>
+        <h4>Store Owner Flow</h4>
+        <ol style="padding-left:18px;">
+          <li>Login → <code>/admin</code></li>
+          <li>View stats (12 products, 4 brands, 4 categories)</li>
+          <li>Click "Sync products"</li>
+          <li>Pipeline: Fetch → Normalize → Dedupe → Store</li>
+          <li>Result: "Synced 12 products"</li>
+        </ol>
+      </div>
+      <div>
+        <h4>User Flow</h4>
+        <ol style="padding-left:18px;">
+          <li>Browse → <code>/discover</code></li>
+          <li>Search "black shirt"</li>
+          <li>Click product → detail page</li>
+          <li>Add to outfit → outfit count ↑</li>
+          <li>Build look → <code>/outfit</code></li>
+          <li>Try on with AI → <code>/try-on</code></li>
+          <li>Save outfit → <code>/saved</code></li>
+          <li>Buy → retailer link</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align:center; color:#999; margin-top:16px; font-size:11px;">
+    WearByChoice Documentation — Generated for system understanding
+  </p>
+</div>
+
+</body>
+</html>

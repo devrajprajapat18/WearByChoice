@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+body { @apply bg-cream text-ink antialiased; font-feature-settings: "ss01"; }
+.card { @apply bg-white rounded-[22px] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.12)] border border-black/[0.06]; }
+.btn-primary { @apply inline-flex items-center justify-center h-12 bg-ink text-white rounded-full px-6 text-sm font-semibold hover:opacity-90 transition; }
+.btn-accent { @apply inline-flex items-center justify-center h-12 bg-accent text-ink rounded-full px-6 text-sm font-bold hover:brightness-95 transition; }
+.btn-ghost { @apply inline-flex items-center justify-center h-12 border border-black/15 rounded-full px-5 text-sm font-semibold hover:bg-black/5 transition bg-white; }
+.input { @apply w-full rounded-full border border-black/10 bg-white px-5 h-12 text-sm outline-none focus:border-black/40 placeholder:text-black/35; }
+.chip { @apply px-3 py-1.5 rounded-full text-sm border border-black/10 bg-white hover:bg-black hover:text-white transition cursor-pointer; }
+.chip-active { @apply bg-ink text-white; }
+.skeleton { @apply animate-pulse bg-black/10 rounded-[22px]; }
+.section-wrap { @apply max-w-[1280px] mx-auto px-6; }
+.eyebrow { @apply text-[11px] font-bold tracking-[0.14em] uppercase text-[#4d8d1f]; }

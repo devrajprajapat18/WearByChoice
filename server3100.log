@@ -1,0 +1,11 @@
+
+> wearbychoice@1.0.0 start
+> next start -p 3100
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3100
+
+ ✓ Starting...
+ ✓ Ready in 523ms
+(node:27904) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)

@@ -1,0 +1,152 @@
+// Prisma schema — production database (PostgreSQL).
+// Dev mode runs without a DB via mock providers; point DATABASE_URL at Postgres to enable.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  image         String?
+  genderPref    String?
+  createdAt     DateTime       @default(now())
+  wishlist      Wishlist[]
+  outfits       Outfit[]
+  tryOnSessions TryOnSession[]
+  searchHistory SearchHistory[]
+}
+
+model Brand {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  slug     String    @unique
+  products Product[]
+}
+
+model Product {
+  id           String         @id @default(cuid())
+  externalId   String
+  provider     String
+  brand        String
+  brandRef     Brand?         @relation(fields: [brandId], references: [id])
+  brandId      String?
+  name         String
+  slug         String         @unique
+  description  String
+  category     String
+  categoryRef  Category?      @relation(fields: [categoryId], references: [id])
+  categoryId   String?
+  gender       String
+  price        Int
+  currency     String         @default("INR")
+  originalPrice Int?
+  colors       String[]
+  sizes        String[]
+  thumbnail    String
+  productUrl   String
+  retailerName String
+  affiliateUrl String?
+  availability Boolean        @default(true)
+  rating       Float          @default(4)
+  popularity   Int            @default(50)
+  tags         String[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  images       ProductImage[]
+  wishlist     Wishlist[]
+  outfitItems  OutfitItem[]
+
+  @@unique([provider, externalId])
+  @@index([brand])
+  @@index([category])
+  @@index([price])
+  @@index([provider])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  url       String
+  alt       String?
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Outfit {
+  id             String         @id @default(cuid())
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  name           String
+  generatedImage String?
+  createdAt      DateTime       @default(now())
+  items          OutfitItem[]
+  tryOnSessions  TryOnSession[]
+}
+
+model OutfitItem {
+  id        String  @id @default(cuid())
+  outfit    Outfit  @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  outfitId  String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+}
+
+model TryOnSession {
+  id        String       @id @default(cuid())
+  user      User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    String?
+  outfit    Outfit?      @relation(fields: [outfitId], references: [id], onDelete: SetNull)
+  outfitId  String?
+  status    String       @default("processing")
+  createdAt DateTime     @default(now())
+  result    TryOnResult?
+}
+
+model TryOnResult {
+  id        String       @id @default(cuid())
+  session   TryOnSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId String       @unique
+  imageUrl  String
+  createdAt DateTime     @default(now())
+}
+
+model SearchHistory {
+  id        String   @id @default(cuid())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    String?
+  query     String
+  createdAt DateTime @default(now())
+}
+
+model ProductProvider {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  baseUrl   String?
+  enabled   Boolean  @default(true)
+  lastSync  DateTime?
+  lastError String?
+}

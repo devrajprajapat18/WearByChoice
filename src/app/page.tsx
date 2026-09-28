@@ -1,24 +1,18 @@
 import Link from "next/link";
 import { MOCK_PRODUCTS } from "@/lib/providers/mockProvider";
 import { ProductCard } from "@/components/ProductCard";
-
-const HERO_THUMBS = [
-  { src: "/hero/hero-blue-colorblock.png", alt: "Sky blue colorblock hoodie on model" },
-  { src: "/hero/hero-tribal-jacket.png", alt: "Cream tribal trucker jacket on model" },
-  { src: "/hero/hero-orange-furry.png", alt: "Orange sunset furry hoodie on model" },
-  { src: "/hero/hero-panda-tee.png", alt: "Grey panda graphic tee on model" },
-];
+import { HeroTryOn } from "@/components/HeroTryOn";
 
 const CATEGORIES = [
   { name: "T-Shirts", img: "/products/black-crew-tee.jpg", pos: "50% 30%" },
   { name: "Shirts", img: "/products/teal-blue-white-check-shirt.jpg", pos: "50% 20%" },
   { name: "Hoodies", img: "/products/tan-pullover-hoodie.jpg", pos: "50% 20%" },
   { name: "Jackets", img: "/products/tan-brown-denim-trucker-jacket.jpg", pos: "50% 20%" },
-  // Real on-model crops so no category is an empty placeholder
-  { name: "Jeans", img: "/hero/hero-main-beige-overshirt.png", pos: "50% 62%" },
-  { name: "Sneakers", img: "/hero/hero-main-beige-overshirt.png", pos: "50% 100%" },
-  { name: "Watches", img: "/hero/hero-blue-colorblock.png", pos: "15% 55%" },
-  { name: "Accessories", img: "/hero/hero-blue-colorblock.png", pos: "50% 0%" },
+  // Real product shots so no category is an empty placeholder
+  { name: "Jeans", img: "/products/category-black-wide-leg-jeans.jpeg", pos: "50% 20%" },
+  { name: "Sneakers", img: "/products/category-yellow-maroon-dunk-sneakers.jpeg", pos: "50% 50%" },
+  { name: "Watches", img: "/products/category-classic-black-leather-watch.jpeg", pos: "50% 30%" },
+  { name: "Accessories", img: "/products/category-mens-accessories-flatlay.jpeg", pos: "50% 30%" },
 ];
 
 const OUTFITS = [
@@ -58,13 +52,13 @@ export default function Home() {
   return (
     <div className="bg-[#fbfaf8]">
       {/* ================= HERO ================= */}
-      <section className="bg-[#eff1e6] border-b border-black/[0.06]">
-        <div className="max-w-[1280px] mx-auto px-6 py-12 md:py-16 grid lg:grid-cols-[1.05fr_0.95fr] gap-12 items-center">
+      <section className="bg-[#f2f4ea] border-b border-black/[0.06]">
+        <div className="max-w-[1280px] mx-auto px-6 py-12 md:py-16 grid lg:grid-cols-[1.02fr_0.98fr] gap-12 items-center">
           <div>
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-[0.12em] uppercase bg-[#e4e9d2] text-[#3f6212] rounded-full px-3.5 py-1.5">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-[0.12em] uppercase bg-[#e3efd0] text-[#3f6212] rounded-full px-3.5 py-1.5">
               ✦ AI VIRTUAL TRY-ON
             </span>
-            <h1 className="mt-5 text-[52px] md:text-[68px] font-black tracking-[-0.03em] leading-[1.0] text-[#111]">
+            <h1 className="mt-5 text-[48px] md:text-[64px] font-black tracking-[-0.03em] leading-[1.02] text-[#111]">
               Wear it before<br />
               <span className="text-[#4d8d1f]">you buy it.</span>
             </h1>
@@ -72,14 +66,14 @@ export default function Home() {
               Upload your photo, explore styles, and see how outfits look on you — powered by AI.
             </p>
             <form action="/discover" method="get" role="search" className="mt-6 flex gap-2.5 max-w-[480px]">
-              <label className="flex-1 flex items-center gap-2.5 bg-white rounded-full border border-black/10 pl-4 pr-1.5 py-1.5 focus-within:border-black/30 transition">
-                <span aria-hidden="true" className="text-black/35 text-[15px]">⧉</span>
+              <label className="flex-1 flex items-center gap-2.5 bg-white rounded-2xl border border-black/10 pl-4 pr-1.5 py-1.5 shadow-sm focus-within:border-black/30 transition">
+                <span aria-hidden="true" className="text-black/35 text-[15px]">🖼</span>
                 <input name="q" placeholder="Try &quot;black oversized shirt&quot;..." aria-label="Search products" className="w-full bg-transparent outline-none text-sm h-9 placeholder:text-black/35" />
               </label>
-              <button className="h-12 rounded-full bg-[#111] text-white text-sm font-semibold px-8 hover:opacity-90 transition shrink-0" type="submit">Search</button>
+              <button className="h-12 rounded-2xl bg-[#111] text-white text-sm font-semibold px-8 hover:opacity-90 transition shrink-0" type="submit">Search</button>
             </form>
             <div className="mt-4 flex gap-3">
-              <Link href="/try-on" className="h-12 inline-flex items-center rounded-full bg-[#c9f158] text-[#111] text-sm font-bold px-7 hover:brightness-[0.96] transition">Try It On →</Link>
+              <Link href="/try-on" className="h-12 inline-flex items-center rounded-full bg-[#c9f158] text-[#111] text-sm font-bold px-7 hover:brightness-[0.96] transition shadow-[0_8px_20px_-8px_rgba(160,220,40,0.8)]">Try It On →</Link>
               <Link href="/discover" className="h-12 inline-flex items-center rounded-full bg-white border border-black/10 text-sm font-semibold px-7 hover:bg-black/[0.04] transition">Explore Fashion</Link>
             </div>
             <div className="mt-7 flex flex-wrap gap-x-8 gap-y-3">
@@ -89,7 +83,7 @@ export default function Home() {
                 ["Save & Share", "Your Looks", "/icons/icons8-share-80.png"],
               ].map(([b, s, icon]) => (
                 <div key={b} className="flex items-center gap-2.5">
-                  <span className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-white border border-black/[0.07] p-1.5" aria-hidden="true">
+                  <span className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-[#e6f4cf] p-1.5" aria-hidden="true">
                     <img src={icon} alt="" loading="lazy" className="h-5 w-5 object-contain" />
                   </span>
                   <span>
@@ -101,30 +95,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Hero visual: 1 main + 4 thumbs */}
-          <div className="flex items-start justify-center gap-4">
-            <div className="relative shrink-0">
-              <img
-                src="/hero/hero-main-beige-overshirt.png"
-                alt="Full-body model wearing beige overshirt, white tee and black jeans"
-                className="w-[300px] xl:w-[330px] aspect-[3/4] object-cover rounded-[22px] bg-[#e3e0d3] shadow-[0_24px_60px_-24px_rgba(0,0,0,0.35)]"
-              />
-              <span className="absolute bottom-4 left-4 inline-flex items-center gap-1.5 bg-white rounded-full pl-1.5 pr-3.5 py-1.5 text-xs font-bold shadow-lg">
-                <span className="h-5 w-5 inline-flex items-center justify-center rounded-full bg-[#111] text-white text-[10px]">◍</span> Your Photo
-              </span>
-            </div>
-            <div className="grid grid-cols-1 gap-3.5 pt-2">
-              {HERO_THUMBS.map((t) => (
-                <img
-                  key={t.src}
-                  src={t.src}
-                  alt={t.alt}
-                  loading="lazy"
-                  className="w-[112px] aspect-[3/4] object-cover rounded-[18px] bg-white shadow-[0_10px_30px_-14px_rgba(0,0,0,0.35)] border border-black/[0.05]"
-                />
-              ))}
-            </div>
-          </div>
+          {/* Hero visual: interactive try-on (jacket options + character photo) */}
+          <HeroTryOn />
         </div>
       </section>
 

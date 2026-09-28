@@ -18,6 +18,14 @@ const PERKS = [
   { icon: "/icons/icons8-share-80.png", title: "Save Your Looks", sub: "Build your collection" },
 ];
 
+const FEATURED_LOOK = {
+  img: "/outfits/outfit-rugged-olive-flatlay.png",
+  alt: "Rugged casual flat-lay: olive corduroy trucker jacket, white tee, dark wash jeans, brown belt, brown watch and brown boots",
+  title: "Rugged Olive + Denim",
+  desc: "Olive corduroy trucker, white tee, dark-wash jeans, brown belt, watch & boots.",
+  items: ["Olive Corduroy Trucker Jacket", "White Crew Tee", "Dark-Wash Jeans", "Brown Leather Belt + Watch", "Brown Lace-Up Boots"],
+};
+
 const STEPS = [
   { n: "01", icon: "/icons/icons8-shopping-bag-64.png", title: "Choose items", text: "Pick tops, bottoms, shoes, watches & accessories" },
   { n: "02", icon: "/icons/icons8-jumper-80.png", title: "Build your outfit", text: "Mix and match pieces to create your look" },
@@ -109,6 +117,27 @@ export default function OutfitPage() {
                   </span>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Featured inspiration look */}
+        <div className="mt-4 rounded-[22px] bg-[#111] text-white border border-black/[0.05] p-5 md:p-6 flex flex-col md:flex-row gap-6 items-center overflow-hidden">
+          <div className="shrink-0 w-full md:w-[280px]">
+            <img src={FEATURED_LOOK.img} alt={FEATURED_LOOK.alt} loading="lazy" className="w-full aspect-[3/4] object-cover rounded-[16px] bg-black" />
+          </div>
+          <div className="flex-1 min-w-0 w-full">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase bg-white/10 border border-white/10 rounded-full px-3 py-1.5 text-white/70">
+              ✦ Featured inspiration
+            </span>
+            <h2 className="mt-3 text-[22px] md:text-[24px] font-extrabold tracking-tight">{FEATURED_LOOK.title}</h2>
+            <p className="text-sm text-white/60 mt-1">{FEATURED_LOOK.desc}</p>
+            <ul className="mt-3 space-y-1.5 text-[12.5px] text-white/70">
+              {FEATURED_LOOK.items.map((i) => <li key={i} className="flex gap-2"><span aria-hidden="true" className="text-[#c9f158]">•</span>{i}</li>)}
+            </ul>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/discover" className="h-11 inline-flex items-center rounded-full bg-[#c9f158] text-[#111] text-[13px] font-bold px-6 hover:brightness-[0.96] transition">Shop this look →</Link>
+              <Link href="/try-on" className="h-11 inline-flex items-center rounded-full bg-white text-[#111] text-[13px] font-bold px-6 hover:bg-white/85 transition">Try it on →</Link>
             </div>
           </div>
         </div>
